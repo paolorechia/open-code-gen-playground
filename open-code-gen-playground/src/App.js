@@ -1,16 +1,28 @@
 import './App.css';
-import React, { useRef } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import Editor from "@monaco-editor/react";
 
 function App() {
   const editorRef = useRef(null);
+  const [editorValue, setEditorValue] = useState("");
 
+  useEffect(() => {
+    console.log('Editor State', editorValue);
+  }, [editorValue])
+
+  function handleEditorChange() {
+    const text = editorRef.current.getValue()
+    console.log("Text ", text)
+    setEditorValue(text)
+  }
 
   function handleEditorDidMount(editor, monaco) {
     // here is the editor instance
     // you can store it in `useRef` for further usage
     editorRef.current = editor; 
+    editor.onDidChangeModelContent = handleEditorChange
   }
+
 
   return (
     <div className="App">
