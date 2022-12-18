@@ -28,6 +28,12 @@
   height: 100%;
   border: 4px solid black;
 }
+.editor-wrapper-loading {
+  display: none;
+}
+.editor-wrapper-ready {
+  display: flex;
+}
 .control-center-wrapper {
   display: flex;
   flex-direction: row;
@@ -57,4 +63,11 @@
   box-shadow: none;
   width: 200px;
   border: 1px solid black;
+}
+
+.loading-wrapper-ready {
+  display: none
+}
+.loading-wrapper-loading {
+  display: block
 }
