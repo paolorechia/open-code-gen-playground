@@ -1,6 +1,7 @@
 import './App.css';
 import React, { useRef, useEffect, useState } from "react";
 import Editor from "@monaco-editor/react";
+import { sendPromptQuery } from "./CodeGen.js"
 
 function App() {
   const editorRef = useRef(null);
@@ -10,9 +11,18 @@ function App() {
     console.log('Editor State', editorValue);
   }, [editorValue])
 
+  async function sendPromptAction() {
+    const result = await sendPromptQuery(editorValue)
+    appendResponseToEditor(result)
+  }
+
+  function appendResponseToEditor(text) {
+    editorRef.current.setValue(editorValue + "\n" + text)
+    handleEditorChange()
+  }
+
   function handleEditorChange() {
     const text = editorRef.current.getValue()
-    console.log("Text ", text)
     setEditorValue(text)
   }
 
@@ -21,6 +31,7 @@ function App() {
     // you can store it in `useRef` for further usage
     editorRef.current = editor; 
     editor.onDidChangeModelContent = handleEditorChange
+    handleEditorChange()
   }
 
 
@@ -33,7 +44,7 @@ function App() {
       <div className="control-center-wrapper">
         <div className="control-center-inner-wrapper">
           <div className="control-center">
-            <button>
+            <button onClick={sendPromptAction}>
               Send Prompt
             </button>
           </div>
