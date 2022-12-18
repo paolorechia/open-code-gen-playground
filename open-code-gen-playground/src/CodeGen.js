@@ -1,19 +1,19 @@
-const API_URL = "http://localhost:3000"
-const delay = ms => new Promise(res => setTimeout(res, ms));
+const API_URL = "http://localhost:8000"
 
 
 export async function sendPromptQuery(prompt) {
-    const controller = new AbortController()
-    const signal = controller.signal;
-
-    const timeoutId = setTimeout(() => controller.abort(), 5000)
-    await delay(2000)
-    fetch(API_URL, { signal })
-    .then((response) => {
-        console.log("Request sucessfull")
-    }).catch((e) => {
-        console.log("Error: ", e)
+    const promptUrl = API_URL + "/prompt"
+    const response = await fetch(promptUrl, {
+        headers: {
+            "Content-Type": "application/json"
+        },
+        method: "POST",
+        body: JSON.stringify({
+            "prompt_text": prompt,
+            "max_response_length": 128
+        })
     })
-    clearTimeout(timeoutId)
-    return "Test prompt result"
+    const json_response = await response.json()
+    console.log("Response: ", json_response)
+    return json_response["model_response"]
 }
