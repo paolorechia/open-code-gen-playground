@@ -71,3 +71,6 @@
 .loading-wrapper-loading {
   display: block
 }
+.loading-wrapper-timeout {
+  display: block
+}

@@ -5,25 +5,44 @@ import { sendPromptQuery } from "./CodeGen.js"
 
 const RequestState = {
   "ready": 1,
-  "loading": 2
+  "loading": 2,
+  "timeout": 3
 }
 const RequestClass = {
   1: "ready",
-  2: "loading"
+  2: "loading",
+  3: "timeout"
 }
+
+const TIMEOUT_IN_MS = 5000;
 
 function App() {
   const editorRef = useRef(null);
   const [editorValue, setEditorValue] = useState("");
   const [requestState, setRequestState] = useState(RequestState.ready);
+  const [timeoutClock, setTimeoutClock] = useState(null);
 
   useEffect(() => {
     console.log('Editor State', editorValue);
   }, [editorValue])
 
+  function timeOutHandler() {
+    const clock = setTimeout(timeOut, TIMEOUT_IN_MS)
+    setTimeoutClock(clock)
+  }
+
+  function timeOut() {
+    console.log("Timed out!!")
+    if (timeoutClock) {
+      setRequestState(RequestState.timeout)
+    }
+  }
+
   async function sendPromptAction() {
     setRequestState(RequestState.loading)
+    timeOutHandler()
     const result = await sendPromptQuery(editorValue)
+    setTimeoutClock(null)
     appendResponseToEditor(result)
   }
 
@@ -63,7 +82,7 @@ function App() {
         </div>
       </div>
       <div className={`loading-wrapper-${RequestClass[requestState]}`}>
-        Loading
+        {RequestClass[requestState]}
       </div>
       <div className={`editor-wrapper editor-wrapper-${RequestClass[requestState]}`}>
         <div className="editor-inner-wrapper">
